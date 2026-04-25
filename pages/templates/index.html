@@ -12,43 +12,29 @@
     </section>
 
     <div class="container py-5">
+        <h2 class="mb-4">Список доступных треков</h2>
         <div class="row row-cols-1 row-cols-md-3 g-4">
             
+            {% for track in tracks %}
             <div class="col">
-                <div class="card h-100 shadow-sm border-primary">
-                    <div class="card-body text-center">
-                        <h5 class="card-title fw-bold">Угадай мелодию</h5>
-                        <p class="card-text text-muted">Слушай отрывок и выбирай правильный трек. Время ограничено!</p>
-                        <div class="bg-dark text-white p-2 rounded mb-3">00:07</div>
+                <div class="card h-100 shadow-sm border-0">
+                    <img src="https://placehold.co/400x200?text={{ track.title }}" class="card-img-top" alt="{{ track.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">{{ track.title }}</h5>
+                        <p class="card-text text-muted">Исполнитель: <strong>{{ track.artist }}</strong></p>
                         <div class="d-grid gap-2">
-                            <button class="btn btn-outline-primary btn-sm">Daft Punk</button>
-                            <button class="btn btn-outline-primary btn-sm">Skrillex</button>
+                            <button class="btn btn-outline-primary btn-sm">Выбрать для битвы</button>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <div class="col">
-                <div class="card h-100 shadow-sm border-0">
-                    <img src="https://placehold.co/400x200?text=1vs1+Battle" class="card-img-top" alt="Дуэль">
-                    <div class="card-body">
-                        <h5 class="card-title text-primary">Приватная Дуэль</h5>
-                        <p class="card-text text-muted">Брось вызов другу в закрытой комнате. Узнайте, кто лучше знает жанр.</p>
-                        <button class="btn btn-outline-secondary w-100 mt-2">Создать комнату</button>
-                    </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="alert alert-warning">
+                    К сожалению, треков пока нет. Заходите позже!
                 </div>
             </div>
-
-            <div class="col">
-                <div class="card h-100 shadow-sm border-0">
-                    <img src="https://placehold.co/400x200?text=Rewards" class="card-img-top" alt="Награды">
-                    <div class="card-body">
-                        <h5 class="card-title text-primary">Магазин наград</h5>
-                        <p class="card-text text-muted">Трать баллы за победы на эксклюзивные сэмплы и пресеты.</p>
-                        <button class="btn btn-outline-secondary w-100 mt-2">В арсенал</button>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
 
         </div>
     </div>
