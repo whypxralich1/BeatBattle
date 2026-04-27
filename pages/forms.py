@@ -1,4 +1,5 @@
 from django import forms
+from .models import Track
 
 class FeedbackForm(forms.Form):
     subject = forms.CharField(
@@ -14,3 +15,12 @@ class FeedbackForm(forms.Form):
         label='Сообщение',
         widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5, 'placeholder': 'Ваш вопрос или предложение...'})
     )
+
+class TrackForm(forms.ModelForm):
+    class Meta:
+        model = Track
+        fields = ['title', 'artist']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Название трека'}),
+            'artist': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Исполнитель'}),
+        }

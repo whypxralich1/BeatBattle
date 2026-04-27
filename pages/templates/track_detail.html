@@ -1,28 +1,25 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ track.title }} | BeatBattle{% endblock %}
+{% block title %}Детали трека | BeatBattle{% endblock %}
 
 {% block content %}
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card shadow">
+            <div class="card shadow border-0">
                 <div class="card-body p-5">
-                    <h1 class="display-4">{{ track.title }}</h1>
-                    <h3 class="text-muted mb-4">Исполнитель: {{ track.artist }}</h3>
-                    
+                    <h1 class="display-4 fw-bold text-primary">{{ track.title }}</h1>
+                    <h3 class="text-muted mb-4">{{ track.artist }}</h3>
                     <hr>
-                    
                     <div class="my-4">
-                        <h5>О треке:</h5>
-                        <p class="lead">Этот трек готов к битве в системе BeatBattle. Проверьте свои навыки угадывания!</p>
-                        </div>
-
+                        <p class="lead">Информация о треке для участия в битвах BeatBattle.</p>
+                    </div>
                     <div class="d-flex justify-content-between align-items-center mt-5">
-                        <a href="{% url 'home' %}" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left"></i> Назад к списку
-                        </a>
-                        <button class="btn btn-primary btn-lg">Начать баттл</button>
+                        <a href="{% url 'home' %}" class="btn btn-outline-secondary">Назад к списку</a>
+                        <div>
+                            <a href="{% url 'track_update' track.pk %}" class="btn btn-warning">Редактировать</a>
+                            <button class="btn btn-primary">Начать баттл</button>
+                        </div>
                     </div>
                 </div>
             </div>

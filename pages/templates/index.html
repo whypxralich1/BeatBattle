@@ -12,9 +12,11 @@
     </section>
 
     <div class="container py-5">
-        <h2 class="mb-4">Список доступных треков</h2>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Список доступных треков</h2>
+            <a href="{% url 'track_create' %}" class="btn btn-success">+ Добавить трек</a>
+        </div>
         <div class="row row-cols-1 row-cols-md-3 g-4">
-            
             {% for track in tracks %}
             <div class="col">
                 <div class="card h-100 shadow-sm border-0">
@@ -30,12 +32,9 @@
             </div>
             {% empty %}
             <div class="col-12 text-center py-5">
-                <div class="alert alert-warning">
-                    К сожалению, треков пока нет. Заходите позже!
-                </div>
+                <div class="alert alert-warning">К сожалению, треков пока нет. Заходите позже!</div>
             </div>
             {% endfor %}
-
         </div>
     </div>
 {% endblock %}
