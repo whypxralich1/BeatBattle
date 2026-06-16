@@ -1,5 +1,6 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from pages.models import Track
 from pages import views
 
 urlpatterns = [
@@ -10,4 +11,6 @@ urlpatterns = [
     path('track/<int:pk>/edit/', views.track_update, name='track_update'),
     path('contact/', views.contact_view, name='contact'),
     path('track/add/', views.track_create, name='track_create'),
+    path('accounts/register/', views.register, name='register'),
+    path('accounts/', include('django.contrib.auth.urls')),
 ]
