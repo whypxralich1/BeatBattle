@@ -1,5 +1,6 @@
 from django import forms
-from .models import Track
+from .models import Track, Comment
+
 
 class FeedbackForm(forms.Form):
     subject = forms.CharField(
@@ -7,22 +8,42 @@ class FeedbackForm(forms.Form):
         max_length=100,
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Тема сообщения'})
     )
+
     email = forms.EmailField(
         label='Ваш Email',
         widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'name@example.com'})
     )
+
     text = forms.CharField(
         label='Сообщение',
         widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5, 'placeholder': 'Ваш вопрос или предложение...'})
     )
 
+
 class TrackForm(forms.ModelForm):
     class Meta:
         model = Track
         fields = ['title', 'artist', 'image', 'tags']
+
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Название трека'}),
             'artist': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Исполнитель'}),
             'image': forms.FileInput(attrs={'class': 'form-control'}),
             'tags': forms.SelectMultiple(attrs={'class': 'form-control'}),
+        }
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['text']
+
+        widgets = {
+            'text': forms.Textarea(
+                attrs={
+                    'class': 'form-control',
+                    'rows': 3,
+                    'placeholder': 'Введите комментарий'
+                }
+            )
         }
