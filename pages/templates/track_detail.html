@@ -8,8 +8,29 @@
         <div class="col-md-8">
             <div class="card shadow border-0">
                 <div class="card-body p-5">
-                    <h1 class="display-4 fw-bold text-primary">{{ track.title }}</h1>
-                    <h3 class="text-muted mb-4">{{ track.artist }}</h3>
+                    <div class="row align-items-center mb-4">
+                        <div class="col-md-5 mb-4 mb-md-0">
+                            {% if track.image %}
+                                <img src="{{ track.image.url }}" class="img-fluid rounded shadow-sm" alt="{{ track.title }}" style="width: 100%; max-height: 250px; object-fit: cover;">
+                            {% else %}
+                                <img src="https://placehold.co/400x400?text={{ track.title }}" class="img-fluid rounded shadow-sm" alt="{{ track.title }}">
+                            {% endif %}
+                        </div>
+                        <div class="col-md-7">
+                            <h1 class="display-5 fw-bold text-primary mb-1">{{ track.title }}</h1>
+                            <h3 class="text-muted mb-3">{{ track.artist }}</h3>
+                            <p class="text-muted mb-1">Автор публикации: <strong>{{ track.author.username }}</strong></p>
+                            
+                            <div class="mt-2">
+                                {% for tag in track.tags.all %}
+                                    <a href="{% url 'tracks_by_tag' tag.id %}" class="badge bg-primary text-decoration-none p-2 me-1">{{ tag.name }}</a>
+                                {% empty %}
+                                    <span class="text-muted small">Теги отсутствуют</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
                     <hr>
                     <div class="my-4">
                         <p class="lead">Информация о треке для участия в битвах BeatBattle.</p>
@@ -17,7 +38,9 @@
                     <div class="d-flex justify-content-between align-items-center mt-5">
                         <a href="{% url 'home' %}" class="btn btn-outline-secondary">Назад к списку</a>
                         <div>
-                            <a href="{% url 'track_update' track.pk %}" class="btn btn-warning">Редактировать</a>
+                            {% if user.is_authenticated and user == track.author %}
+                                <a href="{% url 'track_update' track.pk %}" class="btn btn-warning me-1">Редактировать</a>
+                            {% endif %}
                             <button class="btn btn-primary">Начать баттл</button>
                         </div>
                     </div>
