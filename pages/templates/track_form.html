@@ -9,7 +9,7 @@
             <div class="card shadow border-0">
                 <div class="card-body p-4">
                     <h2 class="mb-4 text-center">{{ title }}</h2>
-                    <form method="post">
+                    <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         {% for field in form %}
                             <div class="mb-3">

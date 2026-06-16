@@ -12,6 +12,13 @@
     </section>
 
     <div class="container py-5">
+        {% if selected_tag %}
+            <div class="alert alert-info mb-4 d-flex justify-content-between align-items-center">
+                <span>Показаны треки с тегом: <strong>{{ selected_tag.name }}</strong></span>
+                <a href="{% url 'home' %}" class="btn btn-sm btn-outline-secondary">Сбросить фильтр</a>
+            </div>
+        {% endif %}
+
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Список доступных треков</h2>
             <a href="{% url 'track_create' %}" class="btn btn-success">+ Добавить трек</a>
@@ -20,10 +27,21 @@
             {% for track in tracks %}
             <div class="col">
                 <div class="card h-100 shadow-sm border-0">
-                    <img src="https://placehold.co/400x200?text={{ track.title }}" class="card-img-top" alt="{{ track.title }}">
+                    {% if track.image %}
+                        <img src="{{ track.image.url }}" class="card-img-top" alt="{{ track.title }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                        <img src="https://placehold.co/400x200?text={{ track.title }}" class="card-img-top" alt="{{ track.title }}">
+                    {% endif %}
                     <div class="card-body">
                         <h5 class="card-title text-primary">{{ track.title }}</h5>
-                        <p class="card-text text-muted">Исполнитель: <strong>{{ track.artist }}</strong></p>
+                        <p class="card-text text-muted mb-2">Исполнитель: <strong>{{ track.artist }}</strong></p>
+                        
+                        <div class="mb-3">
+                            {% for tag in track.tags.all %}
+                                <a href="{% url 'tracks_by_tag' tag.id %}" class="badge bg-secondary text-decoration-none me-1">{{ tag.name }}</a>
+                            {% endfor %}
+                        </div>
+
                         <div class="d-grid gap-2">
                             <a href="{% url 'track_detail' track.pk %}" class="btn btn-outline-primary btn-sm">Подробнее</a>
                         </div>

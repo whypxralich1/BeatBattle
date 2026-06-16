@@ -19,8 +19,10 @@ class FeedbackForm(forms.Form):
 class TrackForm(forms.ModelForm):
     class Meta:
         model = Track
-        fields = ['title', 'artist']
+        fields = ['title', 'artist', 'image', 'tags']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Название трека'}),
             'artist': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Исполнитель'}),
+            'image': forms.FileInput(attrs={'class': 'form-control'}),
+            'tags': forms.SelectMultiple(attrs={'class': 'form-control'}),
         }
