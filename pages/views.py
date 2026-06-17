@@ -1,16 +1,98 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib import messages
+
+from django.urls import reverse_lazy
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    UpdateView,
+    DeleteView
+)
+
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    UserPassesTestMixin
+)
 
 from .models import Track, Tag, Comment
 from .forms import TrackForm, CommentForm
 
 
-def index(request):
-    tracks = Track.objects.all()
-    return render(request, 'index.html', {'tracks': tracks})
+class HomeView(ListView):
+    model = Track
+    template_name = 'index.html'
+    context_object_name = 'tracks'
+    ordering = ['-id']
+
+
+class TrackDetailView(DetailView):
+    model = Track
+    template_name = 'track_detail.html'
+    context_object_name = 'track'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comment_form'] = CommentForm()
+        return context
+
+
+class TrackCreateView(LoginRequiredMixin, CreateView):
+    model = Track
+    form_class = TrackForm
+    template_name = 'track_form.html'
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+
+        messages.success(
+            self.request,
+            'Трек успешно добавлен!'
+        )
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy(
+            'track_detail',
+            kwargs={'pk': self.object.pk}
+        )
+
+
+class TrackUpdateView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    UpdateView
+):
+    model = Track
+    form_class = TrackForm
+    template_name = 'track_form.html'
+
+    def test_func(self):
+        track = self.get_object()
+        return track.author == self.request.user
+
+    def get_success_url(self):
+        return reverse_lazy(
+            'track_detail',
+            kwargs={'pk': self.object.pk}
+        )
+
+
+class TrackDeleteView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    DeleteView
+):
+    model = Track
+    template_name = 'track_confirm_delete.html'
+    success_url = reverse_lazy('home')
+
+    def test_func(self):
+        track = self.get_object()
+        return track.author == self.request.user
 
 
 def about(request):
@@ -19,20 +101,6 @@ def about(request):
 
 def contact_view(request):
     return render(request, 'contact.html')
-
-
-def track_detail(request, pk):
-    track = get_object_or_404(Track, pk=pk)
-    comment_form = CommentForm()
-
-    return render(
-        request,
-        'track_detail.html',
-        {
-            'track': track,
-            'comment_form': comment_form
-        }
-    )
 
 
 def register(request):
@@ -67,6 +135,7 @@ def register(request):
 
 def tracks_by_tag(request, tag_id):
     tag = get_object_or_404(Tag, id=tag_id)
+
     tracks = tag.tracks.all()
 
     return render(
@@ -79,85 +148,6 @@ def tracks_by_tag(request, tag_id):
     )
 
 
-@login_required
-def track_create(request):
-    if request.method == 'POST':
-        form = TrackForm(
-            request.POST,
-            request.FILES
-        )
-
-        if form.is_valid():
-            track = form.save(commit=False)
-            track.author = request.user
-            track.save()
-
-            form.save_m2m()
-
-            messages.success(
-                request,
-                'Трек успешно добавлен!'
-            )
-
-            return redirect(
-                'track_detail',
-                pk=track.pk
-            )
-
-        messages.error(
-            request,
-            'Ошибка заполнения формы.'
-        )
-
-    else:
-        form = TrackForm()
-
-    return render(
-        request,
-        'track_form.html',
-        {
-            'form': form,
-            'title': 'Добавить новый трек'
-        }
-    )
-
-
-@login_required
-def track_update(request, pk):
-    track = get_object_or_404(
-        Track,
-        pk=pk
-    )
-
-    if request.method == 'POST':
-        form = TrackForm(
-            request.POST,
-            request.FILES,
-            instance=track
-        )
-
-        if form.is_valid():
-            form.save()
-
-            return redirect(
-                'track_detail',
-                pk=track.pk
-            )
-
-    else:
-        form = TrackForm(instance=track)
-
-    return render(
-        request,
-        'track_form.html',
-        {
-            'form': form,
-            'title': 'Редактировать трек'
-        }
-    )
-
-
-@login_required
 def add_comment(request, pk):
     track = get_object_or_404(
         Track,
@@ -168,14 +158,17 @@ def add_comment(request, pk):
 
     if form.is_valid():
         comment = form.save(commit=False)
+
         comment.track = track
         comment.author = request.user
+
         comment.save()
 
         messages.success(
             request,
             'Комментарий успешно добавлен!'
         )
+
     else:
         messages.error(
             request,
