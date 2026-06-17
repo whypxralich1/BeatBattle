@@ -8,6 +8,7 @@
         <div class="col-md-8">
             <div class="card shadow border-0">
                 <div class="card-body p-5">
+
                     <div class="row align-items-center mb-4">
                         <div class="col-md-5 mb-4 mb-md-0">
                             {% if track.image %}
@@ -21,20 +22,13 @@
                             <h1 class="display-5 fw-bold text-primary mb-1">{{ track.title }}</h1>
                             <h3 class="text-muted mb-3">{{ track.artist }}</h3>
 
-                            <p class="text-muted mb-1">
-                                Автор публикации:
-                                <strong>{{ track.author.username }}</strong>
-                            </p>
+                            <p class="text-muted mb-1">Автор публикации: <strong>{{ track.author.username }}</strong></p>
 
                             <div class="mt-2">
                                 {% for tag in track.tags.all %}
-                                    <a href="{% url 'tracks_by_tag' tag.id %}" class="badge bg-primary text-decoration-none p-2 me-1">
-                                        {{ tag.name }}
-                                    </a>
+                                    <a href="{% url 'tracks_by_tag' tag.id %}" class="badge bg-primary text-decoration-none p-2 me-1">{{ tag.name }}</a>
                                 {% empty %}
-                                    <span class="text-muted small">
-                                        Теги отсутствуют
-                                    </span>
+                                    <span class="text-muted small">Теги отсутствуют</span>
                                 {% endfor %}
                             </div>
                         </div>
@@ -43,31 +37,19 @@
                     <hr>
 
                     <div class="my-4">
-                        <p class="lead">
-                            Информация о треке для участия в битвах BeatBattle.
-                        </p>
+                        <p class="lead">Информация о треке для участия в битвах BeatBattle.</p>
                     </div>
 
                     <hr>
 
-                    <h3>
-                        Комментарии ({{ track.comments.count }})
-                    </h3>
+                    <h3>Комментарии ({{ track.comments.count }})</h3>
 
                     {% for comment in track.comments.all %}
                         <div class="card mb-2">
                             <div class="card-body">
-                                <strong>
-                                    {{ comment.author.username }}
-                                </strong>
-
-                                <small class="text-muted">
-                                    {{ comment.created_at }}
-                                </small>
-
-                                <p class="mt-2">
-                                    {{ comment.text }}
-                                </p>
+                                <strong>{{ comment.author.username }}</strong>
+                                <small class="text-muted">{{ comment.created_at }}</small>
+                                <p class="mt-2">{{ comment.text }}</p>
                             </div>
                         </div>
                     {% empty %}
@@ -77,37 +59,25 @@
                     {% if user.is_authenticated %}
                         <form action="{% url 'add_comment' track.pk %}" method="post">
                             {% csrf_token %}
-
                             {{ comment_form.as_p }}
-
-                            <button type="submit" class="btn btn-primary">
-                                Отправить комментарий
-                            </button>
+                            <button type="submit" class="btn btn-primary">Отправить комментарий</button>
                         </form>
                     {% else %}
                         <p class="mt-3">
-                            <a href="{% url 'login' %}">
-                                Войдите
-                            </a>,
-                            чтобы оставить комментарий.
+                            <a href="{% url 'login' %}">Войдите</a>, чтобы оставить комментарий.
                         </p>
                     {% endif %}
 
                     <div class="d-flex justify-content-between align-items-center mt-5">
-                        <a href="{% url 'home' %}" class="btn btn-outline-secondary">
-                            Назад к списку
-                        </a>
+                        <a href="{% url 'home' %}" class="btn btn-outline-secondary">Назад к списку</a>
 
                         <div>
                             {% if user.is_authenticated and user == track.author %}
-                                <a href="{% url 'track_update' track.pk %}" class="btn btn-warning me-1">
-                                    Редактировать
-                                </a>
+                                <a href="{% url 'track_update' track.pk %}" class="btn btn-warning me-1">Редактировать</a>
+                                <a href="{% url 'track_delete' track.pk %}" class="btn btn-danger me-1">Удалить</a>
                             {% endif %}
 
-                            <button class="btn btn-primary">
-                                Начать баттл
-                            </button>
+                            <button class="btn btn-primary">Начать баттл</button>
                         </div>
                     </div>
 
